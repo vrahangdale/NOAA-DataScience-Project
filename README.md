@@ -1,5 +1,5 @@
 # NOAA-DataScience-Project
-## The HTML file is available [here](https://github.com/vrahangdale/NOAA-DataScience-Project/blob/master/Deliverables/Git%20Package/CSVPitchers_FinalDocument.html). Please Download the file and open it in a browser.
+## The final HTML file is available [here](https://rawgit.com/vrahangdale/NOAA-DataScience-Project/master/Deliverables/Git%20Package/CSVPitchers_FinalDocument.html).
 ## Storm Event Database
 
 ### About Dataset
