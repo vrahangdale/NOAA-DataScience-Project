@@ -1,0 +1,372 @@
+---
+title: "RPlots"
+author: "CSV Pitchers"
+date: "November 12, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q1.Frequency of occurrence of event type on the basis of location over the year
+
+In this plot we are reading the data for year 2016 taking into consideration longitudes, latitudes and event types.
+
+### Loading Data
+
+```{r , include = TRUE, message = FALSE, warning = FALSE}
+library(knitr)
+library(ggplot2)
+
+
+Dataset=read.csv('./../../RawDataset/project_data/StormEvents_details-ftp_v1.0_d2016_c20170918.csv', stringsAsFactors = TRUE)
+Dataset1<-Dataset[,c(8,9,11,13,45,46,47,48)]
+Dataset2<- na.omit(Dataset1)
+
+# Insert a new Column named Region and categorize states into different Regions ("South", "West", "Midwest", "Northeast", "USA")
+Dataset2$Region[Dataset2$STATE %in% c("CONNECTICUT","MAINE","MASSACHUSETTS", "NEW HAMPSHIRE","RHODE ISLAND", "VERMONT", "NEW JERSEY", "NEW YORK", "PENNSYLVANIA")] <- "Northeast"
+
+Dataset2$Region[Dataset2$STATE%in% c("ILLINOIS", "INDIANA", "MICHIGAN", "OHIO", "WISCONSIN", "IOWA", "KANSAS", "MINNESOTA", "MISSOURI", "NEBRASKA","NORTH DAKOTA", "SOUTH DAKOTA")] <- "Midwest"
+
+Dataset2$Region[Dataset2$STATE %in% c("DELAWARE", "FLORIDA", 
+                                      "GEORGIA", "MARYLAND", 
+                                      "NORTH CAROLINA", "SOUTH CAROLINA", 
+                                      "VIRGINIA", "DISTRICT OF COLUMBIA", 
+                                      "WEST VIRGINIA", "ALABAMA", "KENTUCKY",
+                                      "MISSISSIPPI", "TENNESSEE", "ARKANSAS", 
+                                      "LOUISIANA", "OKLAHOMA", "TEXAS"
+)] <- "South"
+
+Dataset2$Region[Dataset2$STATE %in% c("ARIZONA", "COLORADO", "IDAHO", 
+                                      "MONTANA", "NEVADA", "NEW MEXICO", 
+                                      "UTAH", "WYOMING", "ALASKA", 
+                                      "CALIFORNIA", "HAWAII", "OREGON", 
+                                      "WASHINGTON"
+)] <- "West"
+
+# Making Subset of Data According to the Region
+
+south_data <-Dataset2[Dataset2$Region == 'South',]
+north_data <-Dataset2[Dataset2$Region == 'Northeast',]
+midwest_data <-Dataset2[Dataset2$Region == 'Midwest',]
+west_data <-Dataset2[Dataset2$Region == 'West',]
+
+
+# Omitting values with na values
+south_data<- na.omit(south_data)
+# Left With 15,778 entries
+north_data<- na.omit(north_data)
+# Left with 2742 entries
+midwest_data<- na.omit(midwest_data)
+#Left with 12,128 entries
+west_data<- na.omit(west_data)
+#Left with 3148 entries
+
+#mapping data for plots
+mapping_n<- north_data
+mapping_n$EVENT_TYPE<- factor(north_data$EVENT_TYPE)
+mapping_s<- south_data
+mapping_s$EVENT_TYPE<- factor(south_data$EVENT_TYPE)
+mapping_w<- west_data
+mapping_w$EVENT_TYPE<- factor(west_data$EVENT_TYPE)
+mapping_mw<- midwest_data
+mapping_mw$EVENT_TYPE<- factor(midwest_data$EVENT_TYPE)
+```
+
+```{r, message = FALSE}
+# Creating the plot under ggplot for north region
+# North Data Plotting
+
+
+ggplot(mapping_n,aes(STATE, EVENT_TYPE))+ geom_point(alpha=1/2, size=5, aes(color=factor(EVENT_TYPE))) + theme(axis.text.x = element_text(angle = 90, hjust =1))
+
+
+# The graph shows the state on horizontal axis and events on vertical axis and the points shows states having events
+
+# south Data Plotting
+
+ggplot(mapping_s,aes(STATE, EVENT_TYPE)) + geom_point(alpha=1/2, size=5, aes(color=factor(EVENT_TYPE)))+theme(axis.text.x = element_text(angle = 90, hjust =1))
+
+
+# West Data Plotting
+
+ggplot(mapping_w,aes(STATE, EVENT_TYPE)) + geom_point(alpha=1/2, size=5, aes(color=factor(EVENT_TYPE)))+theme(axis.text.x = element_text(angle = 90, hjust =1))
+
+
+# MidWest Data Plotting
+
+ggplot(mapping_mw,aes(STATE, EVENT_TYPE)) + geom_point(alpha=1/2, size=5, aes(color=factor(EVENT_TYPE))) + theme(axis.text.x = element_text(angle = 90, hjust =1))
+
+```
+
+## Q3.Event which is more likely to occur on the basis of month (monthwise occurrence)
+
+### Loading & Preparing Data
+
+```{r , include = TRUE, message = FALSE,  warning = FALSE}
+library(knitr)
+library(ggplot2)
+
+##Reading the file from working directory 
+# Reading the Event Id,Event Type, Month and assigning it as Dataset3_month
+Dataset=read.csv('./../../RawDataset/project_data/StormEvents_details-ftp_v1.0_d2016_c20170918.csv')
+Dataset3_month <- Dataset[,c(8,12,13)]
+# Create Month_Name as the factor.
+Dataset3_month$MONTH_NAME=as.factor(Dataset3_month$MONTH_NAME)
+
+#Showing the month with frequency of event occurance-
+table_month <- table(Dataset3_month$MONTH_NAME)
+View(table_month)
+summary(Dataset3_month$MONTH_NAME)
+
+#Creating Subset of data for each month-
+
+jan_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'January',]
+feb_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'February',]
+mar_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'March',]
+apr_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'April',]
+may_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'May',]
+jun_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'June',]
+jul_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'July',]
+aug_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'August',]
+sep_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'September',]
+oct_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'October',]
+nov_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'November',]
+dec_data <-Dataset3_month[Dataset3_month$MONTH_NAME == 'December',]
+
+# Creating Table for jan data and assigning it to new dataframe-
+table_jan <- table(jan_data$EVENT_TYPE)
+data_jan<- as.data.frame(table_jan)
+
+table_feb <- table(feb_data$EVENT_TYPE)
+data_feb<- as.data.frame(table_feb)
+
+table_mar <- table(mar_data$EVENT_TYPE)
+data_mar<- as.data.frame(table_mar)
+
+table_apr <- table(apr_data$EVENT_TYPE)
+data_apr<- as.data.frame(table_apr)
+
+table_may <- table(may_data$EVENT_TYPE)
+data_may<- as.data.frame(table_may)
+
+table_jun <- table(jun_data$EVENT_TYPE)
+data_jun<- as.data.frame(table_jun)
+
+table_jul <- table(jul_data$EVENT_TYPE)
+data_jul<- as.data.frame(table_jul)
+
+table_aug <- table(aug_data$EVENT_TYPE)
+data_aug<- as.data.frame(table_aug)
+
+table_sep <- table(sep_data$EVENT_TYPE)
+data_sep<- as.data.frame(table_sep)
+
+table_oct <- table(oct_data$EVENT_TYPE)
+data_oct<- as.data.frame(table_oct)
+
+table_nov <- table(nov_data$EVENT_TYPE)
+data_nov<- as.data.frame(table_nov)
+
+table_dec <- table(dec_data$EVENT_TYPE)
+data_dec<- as.data.frame(table_dec)
+
+```
+
+```{r, message = FALSE}
+# Creating plot-
+
+p1 <-  ggplot(data_jan, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "January Data Plot",x="Events", y="Number of Events")
+p1
+
+p2 <-  ggplot(data_feb, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "Feb Data Plot",x="Events", y="Number of Events")
+p2
+
+p3 <-  ggplot(data_mar, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "March Data Plot",x="Events", y="Number of Events")
+p3
+p4 <-  ggplot(data_apr, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "April Data Plot",x="Events", y="Number of Events")
+p4
+p5 <-  ggplot(data_may, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "May Data Plot",x="Events", y="Number of Events")
+p5
+p6 <-  ggplot(data_jun, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "June Data Plot",x="Events", y="Number of Events")
+p6
+
+p7 <-  ggplot(data_jul, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "July Data Plot",x="Events", y="Number of Events")
+p7
+
+p8 <-  ggplot(data_aug, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "August Data Plot",x="Events", y="Number of Events")
+p8
+
+p9 <-  ggplot(data_sep, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "September Data Plot",x="Events", y="Number of Events")
+p9
+
+p10 <-  ggplot(data_oct, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "October Data Plot",x="Events", y="Number of Events")
+p10
+
+p11 <-  ggplot(data_nov, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "November Data Plot",x="Events", y="Number of Events")
+p11
+
+p12 <-  ggplot(data_dec, aes(x=Var1, y = Freq))+geom_col()+ theme(axis.text.x = element_text(angle = 90, hjust =1))+labs(title = "December Data Plot",x="Events", y="Number of Events")
+p12
+```
+## Q4.  What is estimated amount of damage (damage property & damage crops) caused by each event? which event is most likely to cause maximum damage?
+
+### Loading & Preparing Data
+
+```{r , include = TRUE, message = FALSE,  warning = FALSE}
+
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+#Read  the dataset of 2016
+Dataset1=read.csv('./../../RawDataset/project_data/StormEvents_details-ftp_v1.0_d2016_c20170918.csv',stringsAsFactors = F)
+
+#Extract only Event Id,Event Type, Month, damage property, damage crops and assigning it as Dataset4_damage
+
+Dataset4_damage <- Dataset1[,c(8,12,13,25,26)]
+
+# Multiply the values of amount in damage_property and damage_crops containing M in data by 1000 to turn into K and remove M from data
+# Remove K from data
+
+Dataset4_update <- Dataset4_damage
+
+index1 <- (substr(Dataset4_update$DAMAGE_PROPERTY,nchar(Dataset4_update$DAMAGE_PROPERTY),nchar(Dataset4_update$DAMAGE_PROPERTY)))=="M"
+index2 <- (substr(Dataset4_update$DAMAGE_CROPS,nchar(Dataset4_update$DAMAGE_CROPS),nchar(Dataset4_update$DAMAGE_CROPS)))=="M"
+index3 <- (substr(Dataset4_update$DAMAGE_PROPERTY,nchar(Dataset4_update$DAMAGE_PROPERTY),nchar(Dataset4_update$DAMAGE_PROPERTY)))=="K"
+index4 <- (substr(Dataset4_update$DAMAGE_CROPS,nchar(Dataset4_update$DAMAGE_CROPS),nchar(Dataset4_update$DAMAGE_CROPS)))=="K"
+
+
+Dataset4_update$DAMAGE_PROPERTY[index1] <- 
+  as.numeric(substr(Dataset4_update$DAMAGE_PROPERTY[index1],1,nchar(Dataset4_update$DAMAGE_PROPERTY[index1])-1))*1000  
+
+Dataset4_update$DAMAGE_CROPS[index2] <- 
+  as.numeric(substr(Dataset4_update$DAMAGE_CROPS[index2],1,nchar(Dataset4_update$DAMAGE_CROPS[index2])-1))*1000  
+
+Dataset4_update$DAMAGE_PROPERTY[index3] <- 
+  as.numeric(substr(Dataset4_update$DAMAGE_PROPERTY[index3],1,nchar(Dataset4_update$DAMAGE_PROPERTY[index3])-1))
+
+Dataset4_update$DAMAGE_CROPS[index4] <- 
+  as.numeric(substr(Dataset4_update$DAMAGE_CROPS[index4],1,nchar(Dataset4_update$DAMAGE_CROPS[index4])-1)) 
+
+#changing fields into numeric
+Dataset4_update$DAMAGE_PROPERTY <- as.numeric(as.character(Dataset4_update$DAMAGE_PROPERTY))
+Dataset4_update$DAMAGE_CROPS <- as.numeric(as.character(Dataset4_update$DAMAGE_CROPS))
+
+#creating dataset removing data having NA in value
+Dataset4_update_rm<- na.omit(Dataset4_update)
+
+#creating dataset replacing data having NA with 0
+Dataset4_update_na<- Dataset4_update
+Dataset4_update_na$DAMAGE_PROPERTY[is.na(Dataset4_update_na$DAMAGE_PROPERTY) ] <- 0
+
+Dataset4_update_na$DAMAGE_CROPS[is.na(Dataset4_update_na$DAMAGE_CROPS) ] <- 0
+
+#Add column which contains the sum of amount of damage property and damage crops
+Dataset4_na_addcol <- Dataset4_update_na
+Dataset4_na_addcol$DAMAGE_OVERALL <- (Dataset4_na_addcol$DAMAGE_PROPERTY + Dataset4_na_addcol$DAMAGE_CROPS)
+
+```
+
+```{r, message = FALSE}
+blue.bold.italic.text <- element_text(face = "bold.italic", color = "blue")
+
+
+#plot for damage property
+p <-  ggplot(Dataset4_na_addcol, aes(x=EVENT_TYPE, y = DAMAGE_PROPERTY))+geom_line()
+ p+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Damage of property by events",
+        x="Event Types", y="Amount of Damage $ (in K)")
+
+#plot for damage crop
+
+ c <-  ggplot(Dataset4_na_addcol, aes(x=EVENT_TYPE, y = DAMAGE_CROPS))+geom_line()
+ c+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Damage of crops by events",
+        x="Event Types", y="Amount of Damage $ (in K)")
+
+ #plot for overall damage 
+ o <-  ggplot(Dataset4_na_addcol, aes(x=EVENT_TYPE, y = DAMAGE_OVERALL))+geom_line()
+ o+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Damage of crops by events",
+        x="Event Types", y="Amount of Damage $ (in K)")
+```
+
+## Q5. Which event is the most severe taking into consideration both fatalities and damage?
+
+### Loading & Preparing Data
+
+```{r , include = TRUE, message = FALSE, warning = FALSE}
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+#Read  the dataset of 2016
+
+Dataset1=read.csv('./../../RawDataset/project_data/StormEvents_details-ftp_v1.0_d2016_c20170918.csv',stringsAsFactors = F)
+
+#Extract only Event Id,Month name, Event Type, damage property, Injuries indirect, injuries direct, deaths indirect, deaths direct and assigning it as Dataset5_severity
+
+Dataset5_severity <- Dataset1[,c(8,12,13,25,21,22,24,23)]
+
+# Multiply the values of amount in damage_property containing M in data by 1000 to turn into K and remove M from data
+# Remove K from data
+
+Dataset5_updateSeverity <- Dataset5_severity
+index1 <- (substr(Dataset5_updateSeverity$DAMAGE_PROPERTY,nchar(Dataset5_updateSeverity$DAMAGE_PROPERTY),nchar(Dataset5_updateSeverity$DAMAGE_PROPERTY)))=="M"
+
+index2 <- (substr(Dataset5_updateSeverity$DAMAGE_PROPERTY,nchar(Dataset5_updateSeverity$DAMAGE_PROPERTY),nchar(Dataset5_updateSeverity$DAMAGE_PROPERTY)))=="K"
+
+
+Dataset5_updateSeverity$DAMAGE_PROPERTY[index1] <- 
+  as.numeric(substr(Dataset5_updateSeverity$DAMAGE_PROPERTY[index1],1,nchar(Dataset5_updateSeverity$DAMAGE_PROPERTY[index1])-1))*1000  
+
+ 
+Dataset5_updateSeverity$DAMAGE_PROPERTY[index2] <- 
+  as.numeric(substr(Dataset5_updateSeverity$DAMAGE_PROPERTY[index2],1,nchar(Dataset5_updateSeverity$DAMAGE_PROPERTY[index2])-1))
+
+#changing fields into numeric
+Dataset5_updateSeverity$DAMAGE_PROPERTY <- as.numeric(as.character(Dataset5_updateSeverity$DAMAGE_PROPERTY))
+
+Dataset5_updateSeverity$DAMAGE_PROPERTY[is.na(Dataset5_updateSeverity$DAMAGE_PROPERTY) ] <- 0
+```
+
+```{r, message = FALSE}
+#plot for INJURIES_INDIRECT
+
+p <-  ggplot(Dataset5_updateSeverity, aes(x=EVENT_TYPE, y = INJURIES_INDIRECT))+geom_line()
+ p+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Indirect injuries by events",
+        x="Event Types", y="Amount of INJURIES_INDIRECT $ (in K)")		
+
+#plot for INJURIES_DIRECT
+
+p <-  ggplot(Dataset5_updateSeverity, aes(x=EVENT_TYPE, y = INJURIES_DIRECT))+geom_line()
+ p+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Direct injuries by events",
+        x="Event Types", y="Amount of INJURIES_DIRECT $ (in K)")
+		
+#plot for DEATHS_DIRECT
+
+p <-  ggplot(Dataset5_updateSeverity, aes(x=EVENT_TYPE, y = DEATHS_DIRECT))+geom_line()
+ p+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Direct Deaths by events",
+        x="Event Types", y="Amount of DEATHS_DIRECT $ (in K)")	
+
+#plot for DEATHS_INDIRECT
+
+p <-  ggplot(Dataset5_updateSeverity, aes(x=EVENT_TYPE, y = DEATHS_INDIRECT))+geom_line()
+ p+ theme(axis.text.x = element_text(angle = 90, hjust =1),
+          title = blue.bold.italic.text, axis.title = blue.bold.italic.text)+
+   labs(title = "Indirect Deaths by events",
+        x="Event Types", y="Amount of DEATHS_INDIRECT $ (in K)")
+ ```
