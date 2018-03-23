@@ -1,5 +1,5 @@
 # NOAA-DataScience-Project
-## The File R markdown file is available [here](https://github.com/vrahangdale/NOAA-DataScience-Project/blob/master/Deliverables/Git%20Package/CSVPitchers_FinalDocument.rmd)
+## The File R markdown file is available [here](https://github.com/vrahangdale/NOAA-DataScience-Project/blob/master/Deliverables/Git%20Package/CSVPitchers_FinalDocument.rmd). Please Download the file and open it in a browser.
 ## Storm Event Database
 
 ### About Dataset
